@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Source Web Scraping & Data Consolidation Dashboard</title>
+    <meta name="description" content="Interactive dashboard and data explorer for Realisieren Technologies Web Scraping Take-Home Technical Assessment.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(99, 102, 241, 0.4);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-cyan: #06b6d4;
+            --accent-indigo: #6366f1;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 70%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+        }
+
+        .container {
+            max-width: 1350px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        header {
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+            margin-bottom: 0.75rem;
+        }
+
+        .badge-pill::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 8px var(--accent-cyan);
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 750px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-indigo), #4f46e5);
+            color: white;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .kpi-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-indigo));
+        }
+
+        .kpi-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .kpi-sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .tab-bar {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-cyan);
+            border-bottom-color: var(--accent-cyan);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .filter-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-indigo);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .filters-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .select-filter {
+            padding: 0.65rem 1rem;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .select-filter:focus {
+            border-color: var(--accent-indigo);
+        }
+
+        .table-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-primary);
+        }
+
+        .source-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .source-books {
+            background: rgba(6, 182, 212, 0.12);
+            color: #67e8f9;
+            border: 1px solid rgba(6, 182, 212, 0.25);
+        }
+
+        .source-quotes {
+            background: rgba(168, 85, 247, 0.12);
+            color: #d8b4fe;
+            border: 1px solid rgba(168, 85, 247, 0.25);
+        }
+
+        .item-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            max-width: 320px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .price-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--accent-emerald);
+        }
+
+        .stars {
+            color: var(--accent-amber);
+            letter-spacing: 2px;
+        }
+
+        .category-tag {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #cbd5e1;
+        }
+
+        .link-icon {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .link-icon:hover {
+            text-decoration: underline;
+        }
+
+        .table-footer {
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-top: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.2);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .pagination-btns {
+            display: flex;
+            gap: 0.35rem;
+        }
+
+        .page-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--accent-indigo);
+            border-color: var(--accent-indigo);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 650px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .funnel-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-row {
+            margin-bottom: 1rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .progress-bar-bg {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-indigo));
+            border-radius: 4px;
+        }
+
+        pre code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: #e2e8f0;
+        }
+
+        .code-card {
+            background: #090d16;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <div class="badge-pill">Realisieren Technologies Assessment</div>
+            <h1>Multi-Source Web Scraping & Consolidation</h1>
+            <p class="subtitle">
+                Automated Python data pipeline that scrapes disparate public web sources (Books to Scrape & Quotes to Scrape),
+                performs cleaning & schema normalization, executes duplicate detection, validates integrity, and generates a consolidated dataset.
+            </p>
+        </div>
+        <div class="header-actions">
+            <a href="https://github.com/naveen057/Realisieren-Technologies-Pvt-Ltd-Assignment" target="_blank" class="btn btn-secondary" id="btn-github">
+                GitHub Repository
+            </a>
+            <a href="output/final_dataset.csv" download class="btn btn-primary" id="btn-download-csv">
+                Download CSV
+            </a>
+        </div>
+    </header>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-label">Total Consolidated Records</div>
+            <div class="kpi-value" id="kpi-total-records">150</div>
+            <div class="kpi-sub">Cleaned & Standardized</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Data Sources</div>
+            <div class="kpi-value">2</div>
+            <div class="kpi-sub">Books to Scrape & Quotes</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Validation Pass Rate</div>
+            <div class="kpi-value" style="color: var(--accent-emerald);">100%</div>
+            <div class="kpi-sub">0 Fatal Schema Errors</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Duplicates Detected</div>
+            <div class="kpi-value" style="color: var(--accent-cyan);">0</div>
+            <div class="kpi-sub">Normalized Fuzzy Keys</div>
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('tab-dataset')" id="tab-btn-dataset">Consolidated Dataset</button>
+        <button class="tab-btn" onclick="switchTab('tab-funnel')" id="tab-btn-funnel">Pipeline Funnel & Completeness</button>
+        <button class="tab-btn" onclick="switchTab('tab-architecture')" id="tab-btn-architecture">Architecture & How to Run</button>
+    </div>
+
+    <div id="tab-dataset" class="tab-pane active">
+        <div class="filter-panel">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" class="search-input" placeholder="Search titles, authors, categories, or keywords..." oninput="handleSearch()">
+            </div>
+            <div class="filters-group">
+                <select id="source-filter" class="select-filter" onchange="handleFilter()">
+                    <option value="all">All Sources</option>
+                    <option value="Books to Scrape">Books to Scrape</option>
+                    <option value="Quotes to Scrape">Quotes to Scrape</option>
+                </select>
+                <select id="category-filter" class="select-filter" onchange="handleFilter()">
+                    <option value="all">All Categories</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-responsive">
+                <table id="dataset-table">
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Name / Title / Quote</th>
+                            <th>Category / Author</th>
+                            <th>Price</th>
+                            <th>Rating</th>
+                            <th>Source URL</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-footer">
+                <div id="pagination-info">Showing 1 to 20 of 0 entries</div>
+                <div class="pagination-btns">
+                    <button class="page-btn" id="btn-prev" onclick="changePage(-1)">Previous</button>
+                    <button class="page-btn" id="btn-next" onclick="changePage(1)">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-funnel" class="tab-pane">
+        <div class="funnel-container">
+            <div class="card-box">
+                <div class="card-title">📊 Pipeline Execution Funnel</div>
+                <div class="progress-row">
+                    <div class="progress-label">
+                        <span>1. Raw Ingested Records</span>
+                        <strong id="funnel-raw">150</strong>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-fill" style="width: 100%;"></div></div>
+                </div>
+                <div class="progress-row">
+                    <div class="progress-label">
+                        <span>2. Cleaned & Standardized</span>
+                        <strong>150</strong>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-fill" style="width: 100%;"></div></div>
+                </div>
+                <div class="progress-row">
+                    <div class="progress-label">
+                        <span>3. Passed Schema Validation</span>
+                        <strong style="color: var(--accent-emerald);">150</strong>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-fill" style="width: 100%; background: var(--accent-emerald);"></div></div>
+                </div>
+                <div class="progress-row">
+                    <div class="progress-label">
+                        <span>4. Deduplicated Final Dataset</span>
+                        <strong style="color: var(--accent-cyan);">150</strong>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-fill" style="width: 100%; background: var(--accent-cyan);"></div></div>
+                </div>
+            </div>
+
+            <div class="card-box">
+                <div class="card-title">🎯 Field Completeness Ratios</div>
+                
+        <div class="progress-row">
+            <div class="progress-label">
+                <code>name_or_title</code>
+                <span>100.0%</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-fill" style="width: 100.0%;"></div></div>
+        </div>
+        
+        <div class="progress-row">
+            <div class="progress-label">
+                <code>category</code>
+                <span>0.0%</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-fill" style="width: 0.0%;"></div></div>
+        </div>
+        
+        <div class="progress-row">
+            <div class="progress-label">
+                <code>price</code>
+                <span>66.7%</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-fill" style="width: 66.7%;"></div></div>
+        </div>
+        
+        <div class="progress-row">
+            <div class="progress-label">
+                <code>rating</code>
+                <span>66.7%</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-fill" style="width: 66.7%;"></div></div>
+        </div>
+        
+        <div class="progress-row">
+            <div class="progress-label">
+                <code>author</code>
+                <span>33.3%</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-fill" style="width: 33.3%;"></div></div>
+        </div>
+        
+        <div class="progress-row">
+            <div class="progress-label">
+                <code>tags</code>
+                <span>32.0%</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-fill" style="width: 32.0%;"></div></div>
+        </div>
+        
+        <div class="progress-row">
+            <div class="progress-label">
+                <code>description</code>
+                <span>0.0%</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-fill" style="width: 0.0%;"></div></div>
+        </div>
+        
+        <div class="progress-row">
+            <div class="progress-label">
+                <code>source_url</code>
+                <span>100.0%</span>
+            </div>
+            <div class="progress-bar-bg"><div class="progress-fill" style="width: 100.0%;"></div></div>
+        </div>
+        
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-architecture" class="tab-pane">
+        <div class="card-box" style="margin-bottom: 1.5rem;">
+            <div class="card-title">⚙️ Execution Architecture</div>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                The pipeline decouples scraping, parsing, cleaning, validation, and deduplication into distinct, testable modules.
+            </p>
+            <div class="code-card">
+                <pre><code>Website A (Books to Scrape) ──┐
+Website B (Quotes to Scrape) ─┼──> Scraping ──> Cleaning ──> Validation ──> Deduplication ──> Consolidation ──> Final Output
+                              ┘</code></pre>
+            </div>
+        </div>
+
+        <div class="card-box">
+            <div class="card-title">💻 Quick Run Commands</div>
+            <div class="code-card">
+                <pre><code># 1. Run scraper with default 3 pages per source
+python main.py
+
+# 2. Scrape all available pages until pagination concludes
+python main.py --all-pages
+
+# 3. Fast run without visiting individual book pages
+python main.py --max-pages 5 --no-details
+
+# 4. Run automated test suite (24 tests)
+pytest -v</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="detail-modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <h3 id="modal-title" style="margin-bottom: 1rem; color: var(--text-primary);">Record Details</h3>
+        <div id="modal-body" style="font-size: 0.9rem; color: var(--text-secondary);"></div>
+    </div>
+</div>
+
+<script>
+    const DATASET = [{"source": "Books to Scrape", "name_or_title": "A Light in the Attic", "category": null, "price": 51.77, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html", "scraped_at": "2026-10-06T17:36:06.351567+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Tipping the Velvet", "category": null, "price": 53.74, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/tipping-the-velvet_999/index.html", "scraped_at": "2026-10-06T17:36:06.352059+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Soumission", "category": null, "price": 50.1, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/soumission_998/index.html", "scraped_at": "2026-10-06T17:36:06.352446+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Sharp Objects", "category": null, "price": 47.82, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/sharp-objects_997/index.html", "scraped_at": "2026-10-06T17:36:06.352829+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Sapiens: A Brief History of Humankind", "category": null, "price": 54.23, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/sapiens-a-brief-history-of-humankind_996/index.html", "scraped_at": "2026-10-06T17:36:06.353231+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Requiem Red", "category": null, "price": 22.65, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-requiem-red_995/index.html", "scraped_at": "2026-10-06T17:36:06.353610+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Dirty Little Secrets of Getting Your Dream Job", "category": null, "price": 33.34, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-dirty-little-secrets-of-getting-your-dream-job_994/index.html", "scraped_at": "2026-10-06T17:36:06.353986+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Coming Woman: A Novel Based on the Life of the Infamous Feminist, Victoria Woodhull", "category": null, "price": 17.93, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-coming-woman-a-novel-based-on-the-life-of-the-infamous-feminist-victoria-woodhull_993/index.html", "scraped_at": "2026-10-06T17:36:06.354387+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Boys in the Boat: Nine Americans and Their Epic Quest for Gold at the 1936 Berlin Olympics", "category": null, "price": 22.6, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-boys-in-the-boat-nine-americans-and-their-epic-quest-for-gold-at-the-1936-berlin-olympics_992/index.html", "scraped_at": "2026-10-06T17:36:06.354760+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Black Maria", "category": null, "price": 52.15, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-black-maria_991/index.html", "scraped_at": "2026-10-06T17:36:06.355131+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Starving Hearts (Triangular Trade Trilogy, #1)", "category": null, "price": 13.99, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/starving-hearts-triangular-trade-trilogy-1_990/index.html", "scraped_at": "2026-10-06T17:36:06.355522+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Shakespeare's Sonnets", "category": null, "price": 20.66, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/shakespeares-sonnets_989/index.html", "scraped_at": "2026-10-06T17:36:06.355904+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Set Me Free", "category": null, "price": 17.46, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/set-me-free_988/index.html", "scraped_at": "2026-10-06T17:36:06.356275+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Scott Pilgrim's Precious Little Life (Scott Pilgrim #1)", "category": null, "price": 52.29, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/scott-pilgrims-precious-little-life-scott-pilgrim-1_987/index.html", "scraped_at": "2026-10-06T17:36:06.356655+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Rip it Up and Start Again", "category": null, "price": 35.02, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/rip-it-up-and-start-again_986/index.html", "scraped_at": "2026-10-06T17:36:06.357055+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Our Band Could Be Your Life: Scenes from the American Indie Underground, 1981-1991", "category": null, "price": 57.25, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/our-band-could-be-your-life-scenes-from-the-american-indie-underground-1981-1991_985/index.html", "scraped_at": "2026-10-06T17:36:06.357428+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Olio", "category": null, "price": 23.88, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/olio_984/index.html", "scraped_at": "2026-10-06T17:36:06.357799+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Mesaerion: The Best Science Fiction Stories 1800-1849", "category": null, "price": 37.59, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/mesaerion-the-best-science-fiction-stories-1800-1849_983/index.html", "scraped_at": "2026-10-06T17:36:06.358205+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Libertarianism for Beginners", "category": null, "price": 51.33, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/libertarianism-for-beginners_982/index.html", "scraped_at": "2026-10-06T17:36:06.358576+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "It's Only the Himalayas", "category": null, "price": 45.17, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/its-only-the-himalayas_981/index.html", "scraped_at": "2026-10-06T17:36:06.358946+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "In Her Wake", "category": null, "price": 12.84, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/in-her-wake_980/index.html", "scraped_at": "2026-10-06T17:36:06.839633+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "How Music Works", "category": null, "price": 37.32, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/how-music-works_979/index.html", "scraped_at": "2026-10-06T17:36:06.840047+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Foolproof Preserving: A Guide to Small Batch Jams, Jellies, Pickles, Condiments, and More: A Foolproof Guide to Making Small Batch Jams, Jellies, Pickles, Condiments, and More", "category": null, "price": 30.52, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/foolproof-preserving-a-guide-to-small-batch-jams-jellies-pickles-condiments-and-more-a-foolproof-guide-to-making-small-batch-jams-jellies-pickles-condiments-and-more_978/index.html", "scraped_at": "2026-10-06T17:36:06.840424+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Chase Me (Paris Nights #2)", "category": null, "price": 25.27, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/chase-me-paris-nights-2_977/index.html", "scraped_at": "2026-10-06T17:36:06.840800+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Black Dust", "category": null, "price": 34.53, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/black-dust_976/index.html", "scraped_at": "2026-10-06T17:36:06.841172+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Birdsong: A Story in Pictures", "category": null, "price": 54.64, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/birdsong-a-story-in-pictures_975/index.html", "scraped_at": "2026-10-06T17:36:06.841584+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "America's Cradle of Quarterbacks: Western Pennsylvania's Football Factory from Johnny Unitas to Joe Montana", "category": null, "price": 22.5, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/americas-cradle-of-quarterbacks-western-pennsylvanias-football-factory-from-johnny-unitas-to-joe-montana_974/index.html", "scraped_at": "2026-10-06T17:36:06.841966+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Aladdin and His Wonderful Lamp", "category": null, "price": 53.13, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/aladdin-and-his-wonderful-lamp_973/index.html", "scraped_at": "2026-10-06T17:36:06.842394+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Worlds Elsewhere: Journeys Around Shakespeare's Globe", "category": null, "price": 40.3, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/worlds-elsewhere-journeys-around-shakespeares-globe_972/index.html", "scraped_at": "2026-10-06T17:36:06.842827+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Wall and Piece", "category": null, "price": 44.18, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/wall-and-piece_971/index.html", "scraped_at": "2026-10-06T17:36:06.843256+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Four Agreements: A Practical Guide to Personal Freedom", "category": null, "price": 17.66, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-four-agreements-a-practical-guide-to-personal-freedom_970/index.html", "scraped_at": "2026-10-06T17:36:06.843633+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Five Love Languages: How to Express Heartfelt Commitment to Your Mate", "category": null, "price": 31.05, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-five-love-languages-how-to-express-heartfelt-commitment-to-your-mate_969/index.html", "scraped_at": "2026-10-06T17:36:06.844020+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Elephant Tree", "category": null, "price": 23.82, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-elephant-tree_968/index.html", "scraped_at": "2026-10-06T17:36:06.844441+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Bear and the Piano", "category": null, "price": 36.89, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-bear-and-the-piano_967/index.html", "scraped_at": "2026-10-06T17:36:06.845006+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Sophie's World", "category": null, "price": 15.94, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/sophies-world_966/index.html", "scraped_at": "2026-10-06T17:36:06.845416+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Penny Maybe", "category": null, "price": 33.29, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/penny-maybe_965/index.html", "scraped_at": "2026-10-06T17:36:06.845840+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Maude (1883-1993):She Grew Up with the country", "category": null, "price": 18.02, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/maude-1883-1993she-grew-up-with-the-country_964/index.html", "scraped_at": "2026-10-06T17:36:06.846323+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "In a Dark, Dark Wood", "category": null, "price": 19.63, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/in-a-dark-dark-wood_963/index.html", "scraped_at": "2026-10-06T17:36:06.846707+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Behind Closed Doors", "category": null, "price": 52.22, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/behind-closed-doors_962/index.html", "scraped_at": "2026-10-06T17:36:06.847088+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "You can't bury them all: Poems", "category": null, "price": 33.63, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/you-cant-bury-them-all-poems_961/index.html", "scraped_at": "2026-10-06T17:36:06.847470+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Slow States of Collapse: Poems", "category": null, "price": 57.31, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/slow-states-of-collapse-poems_960/index.html", "scraped_at": "2026-10-06T17:36:07.370277+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Reasons to Stay Alive", "category": null, "price": 26.41, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/reasons-to-stay-alive_959/index.html", "scraped_at": "2026-10-06T17:36:07.370724+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Private Paris (Private #10)", "category": null, "price": 47.61, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/private-paris-private-10_958/index.html", "scraped_at": "2026-10-06T17:36:07.371161+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "#HigherSelfie: Wake Up Your Life. Free Your Soul. Find Your Tribe.", "category": null, "price": 23.11, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/higherselfie-wake-up-your-life-free-your-soul-find-your-tribe_957/index.html", "scraped_at": "2026-10-06T17:36:07.371600+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Without Borders (Wanderlove #1)", "category": null, "price": 45.07, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/without-borders-wanderlove-1_956/index.html", "scraped_at": "2026-10-06T17:36:07.372064+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "When We Collided", "category": null, "price": 31.77, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/when-we-collided_955/index.html", "scraped_at": "2026-10-06T17:36:07.372614+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "We Love You, Charlie Freeman", "category": null, "price": 50.27, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/we-love-you-charlie-freeman_954/index.html", "scraped_at": "2026-10-06T17:36:07.373131+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Untitled Collection: Sabbath Poems 2014", "category": null, "price": 14.27, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/untitled-collection-sabbath-poems-2014_953/index.html", "scraped_at": "2026-10-06T17:36:07.373593+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Unseen City: The Majesty of Pigeons, the Discreet Charm of Snails & Other Wonders of the Urban Wilderness", "category": null, "price": 44.18, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/unseen-city-the-majesty-of-pigeons-the-discreet-charm-of-snails-other-wonders-of-the-urban-wilderness_952/index.html", "scraped_at": "2026-10-06T17:36:07.374065+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Unicorn Tracks", "category": null, "price": 18.78, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/unicorn-tracks_951/index.html", "scraped_at": "2026-10-06T17:36:07.374507+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Unbound: How Eight Technologies Made Us Human, Transformed Society, and Brought Our World to the Brink", "category": null, "price": 25.52, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/unbound-how-eight-technologies-made-us-human-transformed-society-and-brought-our-world-to-the-brink_950/index.html", "scraped_at": "2026-10-06T17:36:07.374937+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Tsubasa: WoRLD CHRoNiCLE 2 (Tsubasa WoRLD CHRoNiCLE #2)", "category": null, "price": 16.28, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/tsubasa-world-chronicle-2-tsubasa-world-chronicle-2_949/index.html", "scraped_at": "2026-10-06T17:36:07.375370+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Throwing Rocks at the Google Bus: How Growth Became the Enemy of Prosperity", "category": null, "price": 31.12, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/throwing-rocks-at-the-google-bus-how-growth-became-the-enemy-of-prosperity_948/index.html", "scraped_at": "2026-10-06T17:36:07.375804+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "This One Summer", "category": null, "price": 19.49, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/this-one-summer_947/index.html", "scraped_at": "2026-10-06T17:36:07.376238+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Thirst", "category": null, "price": 17.27, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/thirst_946/index.html", "scraped_at": "2026-10-06T17:36:07.376668+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Torch Is Passed: A Harding Family Story", "category": null, "price": 19.09, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-torch-is-passed-a-harding-family-story_945/index.html", "scraped_at": "2026-10-06T17:36:07.377070+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Secret of Dreadwillow Carse", "category": null, "price": 56.13, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-secret-of-dreadwillow-carse_944/index.html", "scraped_at": "2026-10-06T17:36:07.377457+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Pioneer Woman Cooks: Dinnertime: Comfort Classics, Freezer Food, 16-Minute Meals, and Other Delicious Ways to Solve Supper!", "category": null, "price": 56.41, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-pioneer-woman-cooks-dinnertime-comfort-classics-freezer-food-16-minute-meals-and-other-delicious-ways-to-solve-supper_943/index.html", "scraped_at": "2026-10-06T17:36:07.377844+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Past Never Ends", "category": null, "price": 56.5, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-past-never-ends_942/index.html", "scraped_at": "2026-10-06T17:36:07.378227+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Natural History of Us (The Fine Art of Pretending #2)", "category": null, "price": 45.22, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-natural-history-of-us-the-fine-art-of-pretending-2_941/index.html", "scraped_at": "2026-10-06T17:36:07.378607+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Nameless City (The Nameless City #1)", "category": null, "price": 38.16, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-nameless-city-the-nameless-city-1_940/index.html", "scraped_at": "2026-10-06T17:36:07.881997+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Murder That Never Was (Forensic Instincts #5)", "category": null, "price": 54.11, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-murder-that-never-was-forensic-instincts-5_939/index.html", "scraped_at": "2026-10-06T17:36:07.882364+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Most Perfect Thing: Inside (and Outside) a Bird's Egg", "category": null, "price": 42.96, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-most-perfect-thing-inside-and-outside-a-birds-egg_938/index.html", "scraped_at": "2026-10-06T17:36:07.882716+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Mindfulness and Acceptance Workbook for Anxiety: A Guide to Breaking Free from Anxiety, Phobias, and Worry Using Acceptance and Commitment Therapy", "category": null, "price": 23.89, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-mindfulness-and-acceptance-workbook-for-anxiety-a-guide-to-breaking-free-from-anxiety-phobias-and-worry-using-acceptance-and-commitment-therapy_937/index.html", "scraped_at": "2026-10-06T17:36:07.883073+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Life-Changing Magic of Tidying Up: The Japanese Art of Decluttering and Organizing", "category": null, "price": 16.77, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-life-changing-magic-of-tidying-up-the-japanese-art-of-decluttering-and-organizing_936/index.html", "scraped_at": "2026-10-06T17:36:07.883427+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Inefficiency Assassin: Time Management Tactics for Working Smarter, Not Longer", "category": null, "price": 20.59, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-inefficiency-assassin-time-management-tactics-for-working-smarter-not-longer_935/index.html", "scraped_at": "2026-10-06T17:36:07.883779+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Gutsy Girl: Escapades for Your Life of Epic Adventure", "category": null, "price": 37.13, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-gutsy-girl-escapades-for-your-life-of-epic-adventure_934/index.html", "scraped_at": "2026-10-06T17:36:07.884132+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Electric Pencil: Drawings from Inside State Hospital No. 3", "category": null, "price": 56.06, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-electric-pencil-drawings-from-inside-state-hospital-no-3_933/index.html", "scraped_at": "2026-10-06T17:36:07.884491+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Death of Humanity: and the Case for Life", "category": null, "price": 58.11, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-death-of-humanity-and-the-case-for-life_932/index.html", "scraped_at": "2026-10-06T17:36:07.884846+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Bulletproof Diet: Lose up to a Pound a Day, Reclaim Energy and Focus, Upgrade Your Life", "category": null, "price": 49.05, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-bulletproof-diet-lose-up-to-a-pound-a-day-reclaim-energy-and-focus-upgrade-your-life_931/index.html", "scraped_at": "2026-10-06T17:36:07.885198+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Art Forger", "category": null, "price": 40.76, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-art-forger_930/index.html", "scraped_at": "2026-10-06T17:36:07.885549+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Age of Genius: The Seventeenth Century and the Birth of the Modern Mind", "category": null, "price": 19.73, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-age-of-genius-the-seventeenth-century-and-the-birth-of-the-modern-mind_929/index.html", "scraped_at": "2026-10-06T17:36:07.885987+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "The Activist's Tao Te Ching: Ancient Advice for a Modern Revolution", "category": null, "price": 32.24, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/the-activists-tao-te-ching-ancient-advice-for-a-modern-revolution_928/index.html", "scraped_at": "2026-10-06T17:36:07.886364+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Spark Joy: An Illustrated Master Class on the Art of Organizing and Tidying Up", "category": null, "price": 41.83, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/spark-joy-an-illustrated-master-class-on-the-art-of-organizing-and-tidying-up_927/index.html", "scraped_at": "2026-10-06T17:36:07.886717+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Soul Reader", "category": null, "price": 39.58, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/soul-reader_926/index.html", "scraped_at": "2026-10-06T17:36:07.887068+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Security", "category": null, "price": 39.25, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/security_925/index.html", "scraped_at": "2026-10-06T17:36:07.887419+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Saga, Volume 6 (Saga (Collected Editions) #6)", "category": null, "price": 25.02, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/saga-volume-6-saga-collected-editions-6_924/index.html", "scraped_at": "2026-10-06T17:36:07.887771+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Saga, Volume 5 (Saga (Collected Editions) #5)", "category": null, "price": 51.04, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/saga-volume-5-saga-collected-editions-5_923/index.html", "scraped_at": "2026-10-06T17:36:07.888123+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Reskilling America: Learning to Labor in the Twenty-First Century", "category": null, "price": 19.83, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/reskilling-america-learning-to-labor-in-the-twenty-first-century_922/index.html", "scraped_at": "2026-10-06T17:36:07.888475+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Rat Queens, Vol. 3: Demons (Rat Queens (Collected Editions) #11-15)", "category": null, "price": 50.4, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/rat-queens-vol-3-demons-rat-queens-collected-editions-11-15_921/index.html", "scraped_at": "2026-10-06T17:36:07.888826+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Princess Jellyfish 2-in-1 Omnibus, Vol. 01 (Princess Jellyfish 2-in-1 Omnibus #1)", "category": null, "price": 13.61, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/princess-jellyfish-2-in-1-omnibus-vol-01-princess-jellyfish-2-in-1-omnibus-1_920/index.html", "scraped_at": "2026-10-06T17:36:08.389817+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Princess Between Worlds (Wide-Awake Princess #5)", "category": null, "price": 13.34, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/princess-between-worlds-wide-awake-princess-5_919/index.html", "scraped_at": "2026-10-06T17:36:08.390243+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Pop Gun War, Volume 1: Gift", "category": null, "price": 18.97, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/pop-gun-war-volume-1-gift_918/index.html", "scraped_at": "2026-10-06T17:36:08.390603+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Political Suicide: Missteps, Peccadilloes, Bad Calls, Backroom Hijinx, Sordid Pasts, Rotten Breaks, and Just Plain Dumb Mistakes in the Annals of American Politics", "category": null, "price": 36.28, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/political-suicide-missteps-peccadilloes-bad-calls-backroom-hijinx-sordid-pasts-rotten-breaks-and-just-plain-dumb-mistakes-in-the-annals-of-american-politics_917/index.html", "scraped_at": "2026-10-06T17:36:08.390959+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Patience", "category": null, "price": 10.16, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/patience_916/index.html", "scraped_at": "2026-10-06T17:36:08.391313+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Outcast, Vol. 1: A Darkness Surrounds Him (Outcast #1)", "category": null, "price": 15.44, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/outcast-vol-1-a-darkness-surrounds-him-outcast-1_915/index.html", "scraped_at": "2026-10-06T17:36:08.391665+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "orange: The Complete Collection 1 (orange: The Complete Collection #1)", "category": null, "price": 48.41, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/orange-the-complete-collection-1-orange-the-complete-collection-1_914/index.html", "scraped_at": "2026-10-06T17:36:08.392020+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Online Marketing for Busy Authors: A Step-By-Step Guide", "category": null, "price": 46.35, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/online-marketing-for-busy-authors-a-step-by-step-guide_913/index.html", "scraped_at": "2026-10-06T17:36:08.392376+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "On a Midnight Clear", "category": null, "price": 14.07, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/on-a-midnight-clear_912/index.html", "scraped_at": "2026-10-06T17:36:08.392729+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Obsidian (Lux #1)", "category": null, "price": 14.86, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/obsidian-lux-1_911/index.html", "scraped_at": "2026-10-06T17:36:08.393084+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "My Paris Kitchen: Recipes and Stories", "category": null, "price": 33.37, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/my-paris-kitchen-recipes-and-stories_910/index.html", "scraped_at": "2026-10-06T17:36:08.393436+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Masks and Shadows", "category": null, "price": 56.4, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/masks-and-shadows_909/index.html", "scraped_at": "2026-10-06T17:36:08.393786+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Mama Tried: Traditional Italian Cooking for the Screwed, Crude, Vegan, and Tattooed", "category": null, "price": 14.02, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/mama-tried-traditional-italian-cooking-for-the-screwed-crude-vegan-and-tattooed_908/index.html", "scraped_at": "2026-10-06T17:36:08.394136+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Lumberjanes, Vol. 2: Friendship to the Max (Lumberjanes #5-8)", "category": null, "price": 46.91, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/lumberjanes-vol-2-friendship-to-the-max-lumberjanes-5-8_907/index.html", "scraped_at": "2026-10-06T17:36:08.394488+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Lumberjanes, Vol. 1: Beware the Kitten Holy (Lumberjanes #1-4)", "category": null, "price": 45.61, "rating": 3, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/lumberjanes-vol-1-beware-the-kitten-holy-lumberjanes-1-4_906/index.html", "scraped_at": "2026-10-06T17:36:08.394840+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Lumberjanes Vol. 3: A Terrible Plan (Lumberjanes #9-12)", "category": null, "price": 19.92, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/lumberjanes-vol-3-a-terrible-plan-lumberjanes-9-12_905/index.html", "scraped_at": "2026-10-06T17:36:08.395192+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Layered: Baking, Building, and Styling Spectacular Cakes", "category": null, "price": 40.11, "rating": 1, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/layered-baking-building-and-styling-spectacular-cakes_904/index.html", "scraped_at": "2026-10-06T17:36:08.395546+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Judo: Seven Steps to Black Belt (an Introductory Guide for Beginners)", "category": null, "price": 53.9, "rating": 2, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/judo-seven-steps-to-black-belt-an-introductory-guide-for-beginners_903/index.html", "scraped_at": "2026-10-06T17:36:08.395897+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "Join", "category": null, "price": 35.67, "rating": 5, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/join_902/index.html", "scraped_at": "2026-10-06T17:36:08.396247+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Books to Scrape", "name_or_title": "In the Country We Love: My Family Divided", "category": null, "price": 22.0, "rating": 4, "author": null, "tags": null, "description": null, "source_url": "https://books.toscrape.com/catalogue/in-the-country-we-love-my-family-divided_901/index.html", "scraped_at": "2026-10-06T17:36:08.396599+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"The world as we have created it is a process of our thinking. It cannot be changed without changing our thinking.\"", "category": null, "price": null, "rating": null, "author": "Albert Einstein", "tags": "change, deep-thoughts, thinking, world", "description": null, "source_url": "https://quotes.toscrape.com/#quote-1", "scraped_at": "2026-10-06T17:36:09.458356+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"It is our choices, Harry, that show what we truly are, far more than our abilities.\"", "category": null, "price": null, "rating": null, "author": "J.K. Rowling", "tags": "abilities, choices", "description": null, "source_url": "https://quotes.toscrape.com/#quote-2", "scraped_at": "2026-10-06T17:36:09.458654+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"There are only two ways to live your life. One is as though nothing is a miracle. The other is as though everything is a miracle.\"", "category": null, "price": null, "rating": null, "author": "Albert Einstein", "tags": "inspirational, life, live, miracle, miracles", "description": null, "source_url": "https://quotes.toscrape.com/#quote-3", "scraped_at": "2026-10-06T17:36:09.458965+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"The person, be it gentleman or lady, who has not pleasure in a good novel, must be intolerably stupid.\"", "category": null, "price": null, "rating": null, "author": "Jane Austen", "tags": "aliteracy, books, classic, humor", "description": null, "source_url": "https://quotes.toscrape.com/#quote-4", "scraped_at": "2026-10-06T17:36:09.459219+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Imperfection is beauty, madness is genius and it's better to be absolutely ridiculous than absolutely boring.\"", "category": null, "price": null, "rating": null, "author": "Marilyn Monroe", "tags": "be-yourself, inspirational", "description": null, "source_url": "https://quotes.toscrape.com/#quote-5", "scraped_at": "2026-10-06T17:36:09.459439+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Try not to become a man of success. Rather become a man of value.\"", "category": null, "price": null, "rating": null, "author": "Albert Einstein", "tags": "adulthood, success, value", "description": null, "source_url": "https://quotes.toscrape.com/#quote-6", "scraped_at": "2026-10-06T17:36:09.459680+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"It is better to be hated for what you are than to be loved for what you are not.\"", "category": null, "price": null, "rating": null, "author": "André Gide", "tags": "life, love", "description": null, "source_url": "https://quotes.toscrape.com/#quote-7", "scraped_at": "2026-10-06T17:36:09.459899+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"I have not failed. I've just found 10,000 ways that won't work.\"", "category": null, "price": null, "rating": null, "author": "Thomas A. Edison", "tags": "edison, failure, inspirational, paraphrased", "description": null, "source_url": "https://quotes.toscrape.com/#quote-8", "scraped_at": "2026-10-06T17:36:09.460151+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"A woman is like a tea bag; you never know how strong it is until it's in hot water.\"", "category": null, "price": null, "rating": null, "author": "Eleanor Roosevelt", "tags": "misattributed-eleanor-roosevelt", "description": null, "source_url": "https://quotes.toscrape.com/#quote-9", "scraped_at": "2026-10-06T17:36:09.460352+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"A day without sunshine is like, you know, night.\"", "category": null, "price": null, "rating": null, "author": "Steve Martin", "tags": "humor, obvious, simile", "description": null, "source_url": "https://quotes.toscrape.com/#quote-10", "scraped_at": "2026-10-06T17:36:09.460586+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"This life is what you make it. No matter what, you're going to mess up sometimes, it's a universal truth. But the good part is you get to decide how you're going to mess it up. Girls will be your friends - they'll act like it anyway. But just remember, some come, some go. The ones that stay with you through everything - they're your true best friends. Don't let go of them. Also remember, sisters make the best friends in the world. As for lovers, well, they'll come and go too. And baby, I hate to say it, most of them - actually pretty much all of them are going to break your heart, but you can't give up because if you give up, you'll never find your soulmate. You'll never find that half who makes you whole and that goes for everything. Just because you fail once, doesn't mean you're gonna fail at everything. Keep trying, hold on, and always, always, always believe in yourself, because if you don't, then who will, sweetie? So keep your head high, keep your chin up, and most importantly, keep smiling, because life's a beautiful thing and there's so much to smile about.\"", "category": null, "price": null, "rating": null, "author": "Marilyn Monroe", "tags": "friends, heartbreak, inspirational, life, love, sisters", "description": null, "source_url": "https://quotes.toscrape.com/page/2/#quote-1", "scraped_at": "2026-10-06T17:36:09.944536+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"It takes a great deal of bravery to stand up to our enemies, but just as much to stand up to our friends.\"", "category": null, "price": null, "rating": null, "author": "J.K. Rowling", "tags": "courage, friends", "description": null, "source_url": "https://quotes.toscrape.com/page/2/#quote-2", "scraped_at": "2026-10-06T17:36:09.945058+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"If you can't explain it to a six year old, you don't understand it yourself.\"", "category": null, "price": null, "rating": null, "author": "Albert Einstein", "tags": "simplicity, understand", "description": null, "source_url": "https://quotes.toscrape.com/page/2/#quote-3", "scraped_at": "2026-10-06T17:36:09.945592+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"You may not be her first, her last, or her only. She loved before she may love again. But if she loves you now, what else matters? She's not perfect—you aren't either, and the two of you may never be perfect together but if she can make you laugh, cause you to think twice, and admit to being human and making mistakes, hold onto her and give her the most you can. She may not be thinking about you every second of the day, but she will give you a part of her that she knows you can break—her heart. So don't hurt her, don't change her, don't analyze and don't expect more than she can give. Smile when she makes you happy, let her know when she makes you mad, and miss her when she's not there.\"", "category": null, "price": null, "rating": null, "author": "Bob Marley", "tags": "love", "description": null, "source_url": "https://quotes.toscrape.com/page/2/#quote-4", "scraped_at": "2026-10-06T17:36:09.946074+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"I like nonsense, it wakes up the brain cells. Fantasy is a necessary ingredient in living.\"", "category": null, "price": null, "rating": null, "author": "Dr. Seuss", "tags": "fantasy", "description": null, "source_url": "https://quotes.toscrape.com/page/2/#quote-5", "scraped_at": "2026-10-06T17:36:09.946549+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"I may not have gone where I intended to go, but I think I have ended up where I needed to be.\"", "category": null, "price": null, "rating": null, "author": "Douglas Adams", "tags": "life, navigation", "description": null, "source_url": "https://quotes.toscrape.com/page/2/#quote-6", "scraped_at": "2026-10-06T17:36:09.947045+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"The opposite of love is not hate, it's indifference. The opposite of art is not ugliness, it's indifference. The opposite of faith is not heresy, it's indifference. And the opposite of life is not death, it's indifference.\"", "category": null, "price": null, "rating": null, "author": "Elie Wiesel", "tags": "activism, apathy, hate, indifference, inspirational, love, opposite, philosophy", "description": null, "source_url": "https://quotes.toscrape.com/page/2/#quote-7", "scraped_at": "2026-10-06T17:36:09.947757+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"It is not a lack of love, but a lack of friendship that makes unhappy marriages.\"", "category": null, "price": null, "rating": null, "author": "Friedrich Nietzsche", "tags": "friendship, lack-of-friendship, lack-of-love, love, marriage, unhappy-marriage", "description": null, "source_url": "https://quotes.toscrape.com/page/2/#quote-8", "scraped_at": "2026-10-06T17:36:09.948399+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Good friends, good books, and a sleepy conscience: this is the ideal life.\"", "category": null, "price": null, "rating": null, "author": "Mark Twain", "tags": "books, contentment, friends, friendship, life", "description": null, "source_url": "https://quotes.toscrape.com/page/2/#quote-9", "scraped_at": "2026-10-06T17:36:09.949010+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Life is what happens to us while we are making other plans.\"", "category": null, "price": null, "rating": null, "author": "Allen Saunders", "tags": "fate, life, misattributed-john-lennon, planning, plans", "description": null, "source_url": "https://quotes.toscrape.com/page/2/#quote-10", "scraped_at": "2026-10-06T17:36:09.949616+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"I love you without knowing how, or when, or from where. I love you simply, without problems or pride: I love you in this way because I do not know any other way of loving but this, in which there is no I or you, so intimate that your hand upon my chest is my hand, so intimate that when I fall asleep your eyes close.\"", "category": null, "price": null, "rating": null, "author": "Pablo Neruda", "tags": "love, poetry", "description": null, "source_url": "https://quotes.toscrape.com/page/3/#quote-1", "scraped_at": "2026-10-06T17:36:10.430569+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"For every minute you are angry you lose sixty seconds of happiness.\"", "category": null, "price": null, "rating": null, "author": "Ralph Waldo Emerson", "tags": "happiness", "description": null, "source_url": "https://quotes.toscrape.com/page/3/#quote-2", "scraped_at": "2026-10-06T17:36:10.431054+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"If you judge people, you have no time to love them.\"", "category": null, "price": null, "rating": null, "author": "Mother Teresa", "tags": "attributed-no-source", "description": null, "source_url": "https://quotes.toscrape.com/page/3/#quote-3", "scraped_at": "2026-10-06T17:36:10.431515+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Anyone who thinks sitting in church can make you a Christian must also think that sitting in a garage can make you a car.\"", "category": null, "price": null, "rating": null, "author": "Garrison Keillor", "tags": "humor, religion", "description": null, "source_url": "https://quotes.toscrape.com/page/3/#quote-4", "scraped_at": "2026-10-06T17:36:10.432009+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Beauty is in the eye of the beholder and it may be necessary from time to time to give a stupid or misinformed beholder a black eye.\"", "category": null, "price": null, "rating": null, "author": "Jim Henson", "tags": "humor", "description": null, "source_url": "https://quotes.toscrape.com/page/3/#quote-5", "scraped_at": "2026-10-06T17:36:10.432565+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Today you are You, that is truer than true. There is no one alive who is Youer than You.\"", "category": null, "price": null, "rating": null, "author": "Dr. Seuss", "tags": "comedy, life, yourself", "description": null, "source_url": "https://quotes.toscrape.com/page/3/#quote-6", "scraped_at": "2026-10-06T17:36:10.433105+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"If you want your children to be intelligent, read them fairy tales. If you want them to be more intelligent, read them more fairy tales.\"", "category": null, "price": null, "rating": null, "author": "Albert Einstein", "tags": "children, fairy-tales", "description": null, "source_url": "https://quotes.toscrape.com/page/3/#quote-7", "scraped_at": "2026-10-06T17:36:10.433607+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"It is impossible to live without failing at something, unless you live so cautiously that you might as well not have lived at all - in which case, you fail by default.\"", "category": null, "price": null, "rating": null, "author": "J.K. Rowling", "tags": null, "description": null, "source_url": "https://quotes.toscrape.com/page/3/#quote-8", "scraped_at": "2026-10-06T17:36:10.434018+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Logic will get you from A to Z; imagination will get you everywhere.\"", "category": null, "price": null, "rating": null, "author": "Albert Einstein", "tags": "imagination", "description": null, "source_url": "https://quotes.toscrape.com/page/3/#quote-9", "scraped_at": "2026-10-06T17:36:10.434469+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"One good thing about music, when it hits you, you feel no pain.\"", "category": null, "price": null, "rating": null, "author": "Bob Marley", "tags": "music", "description": null, "source_url": "https://quotes.toscrape.com/page/3/#quote-10", "scraped_at": "2026-10-06T17:36:10.434921+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"The more that you read, the more things you will know. The more that you learn, the more places you'll go.\"", "category": null, "price": null, "rating": null, "author": "Dr. Seuss", "tags": "learning, reading, seuss", "description": null, "source_url": "https://quotes.toscrape.com/page/4/#quote-1", "scraped_at": "2026-10-06T17:36:10.913711+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Of course it is happening inside your head, Harry, but why on earth should that mean that it is not real?\"", "category": null, "price": null, "rating": null, "author": "J.K. Rowling", "tags": "dumbledore", "description": null, "source_url": "https://quotes.toscrape.com/page/4/#quote-2", "scraped_at": "2026-10-06T17:36:10.914266+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"The truth is, everyone is going to hurt you. You just got to find the ones worth suffering for.\"", "category": null, "price": null, "rating": null, "author": "Bob Marley", "tags": "friendship", "description": null, "source_url": "https://quotes.toscrape.com/page/4/#quote-3", "scraped_at": "2026-10-06T17:36:10.914736+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Not all of us can do great things. But we can do small things with great love.\"", "category": null, "price": null, "rating": null, "author": "Mother Teresa", "tags": "misattributed-to-mother-teresa, paraphrased", "description": null, "source_url": "https://quotes.toscrape.com/page/4/#quote-4", "scraped_at": "2026-10-06T17:36:10.915233+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"To the well-organized mind, death is but the next great adventure.\"", "category": null, "price": null, "rating": null, "author": "J.K. Rowling", "tags": "death, inspirational", "description": null, "source_url": "https://quotes.toscrape.com/page/4/#quote-5", "scraped_at": "2026-10-06T17:36:10.915728+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"All you need is love. But a little chocolate now and then doesn't hurt.\"", "category": null, "price": null, "rating": null, "author": "Charles M. Schulz", "tags": "chocolate, food, humor", "description": null, "source_url": "https://quotes.toscrape.com/page/4/#quote-6", "scraped_at": "2026-10-06T17:36:10.916261+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"We read to know we're not alone.\"", "category": null, "price": null, "rating": null, "author": "William Nicholson", "tags": "misattributed-to-c-s-lewis, reading", "description": null, "source_url": "https://quotes.toscrape.com/page/4/#quote-7", "scraped_at": "2026-10-06T17:36:10.916754+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Any fool can know. The point is to understand.\"", "category": null, "price": null, "rating": null, "author": "Albert Einstein", "tags": "knowledge, learning, understanding, wisdom", "description": null, "source_url": "https://quotes.toscrape.com/page/4/#quote-8", "scraped_at": "2026-10-06T17:36:10.917326+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"I have always imagined that Paradise will be a kind of library.\"", "category": null, "price": null, "rating": null, "author": "Jorge Luis Borges", "tags": "books, library", "description": null, "source_url": "https://quotes.toscrape.com/page/4/#quote-9", "scraped_at": "2026-10-06T17:36:10.917821+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"It is never too late to be what you might have been.\"", "category": null, "price": null, "rating": null, "author": "George Eliot", "tags": "inspirational", "description": null, "source_url": "https://quotes.toscrape.com/page/4/#quote-10", "scraped_at": "2026-10-06T17:36:10.918279+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"A reader lives a thousand lives before he dies, said Jojen. The man who never reads lives only one.\"", "category": null, "price": null, "rating": null, "author": "George R.R. Martin", "tags": "read, readers, reading, reading-books", "description": null, "source_url": "https://quotes.toscrape.com/page/5/#quote-1", "scraped_at": "2026-10-06T17:36:11.389300+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"You can never get a cup of tea large enough or a book long enough to suit me.\"", "category": null, "price": null, "rating": null, "author": "C.S. Lewis", "tags": "books, inspirational, reading, tea", "description": null, "source_url": "https://quotes.toscrape.com/page/5/#quote-2", "scraped_at": "2026-10-06T17:36:11.389778+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"You believe lies so you eventually learn to trust no one but yourself.\"", "category": null, "price": null, "rating": null, "author": "Marilyn Monroe", "tags": null, "description": null, "source_url": "https://quotes.toscrape.com/page/5/#quote-3", "scraped_at": "2026-10-06T17:36:11.390112+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"If you can make a woman laugh, you can make her do anything.\"", "category": null, "price": null, "rating": null, "author": "Marilyn Monroe", "tags": "girls, love", "description": null, "source_url": "https://quotes.toscrape.com/page/5/#quote-4", "scraped_at": "2026-10-06T17:36:11.390508+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Life is like riding a bicycle. To keep your balance, you must keep moving.\"", "category": null, "price": null, "rating": null, "author": "Albert Einstein", "tags": "life, simile", "description": null, "source_url": "https://quotes.toscrape.com/page/5/#quote-5", "scraped_at": "2026-10-06T17:36:11.390901+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"The real lover is the man who can thrill you by kissing your forehead or smiling into your eyes or just staring into space.\"", "category": null, "price": null, "rating": null, "author": "Marilyn Monroe", "tags": "love", "description": null, "source_url": "https://quotes.toscrape.com/page/5/#quote-6", "scraped_at": "2026-10-06T17:36:11.391263+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"A wise girl kisses but doesn't love, listens but doesn't believe, and leaves before she is left.\"", "category": null, "price": null, "rating": null, "author": "Marilyn Monroe", "tags": "attributed-no-source", "description": null, "source_url": "https://quotes.toscrape.com/page/5/#quote-7", "scraped_at": "2026-10-06T17:36:11.391652+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Only in the darkness can you see the stars.\"", "category": null, "price": null, "rating": null, "author": "Martin Luther King Jr.", "tags": "hope, inspirational", "description": null, "source_url": "https://quotes.toscrape.com/page/5/#quote-8", "scraped_at": "2026-10-06T17:36:11.392061+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"It matters not what someone is born, but what they grow to be.\"", "category": null, "price": null, "rating": null, "author": "J.K. Rowling", "tags": "dumbledore", "description": null, "source_url": "https://quotes.toscrape.com/page/5/#quote-9", "scraped_at": "2026-10-06T17:36:11.392435+00:00", "is_duplicate": false, "duplicate_of": null}, {"source": "Quotes to Scrape", "name_or_title": "\"Love does not begin and end the way we seem to think it does. Love is a battle, love is a war; love is a growing up.\"", "category": null, "price": null, "rating": null, "author": "James Baldwin", "tags": "love", "description": null, "source_url": "https://quotes.toscrape.com/page/5/#quote-10", "scraped_at": "2026-10-06T17:36:11.392796+00:00", "is_duplicate": false, "duplicate_of": null}];
+
+    let filteredData = [...DATASET];
+    let currentPage = 1;
+    const pageSize = 20;
+
+    function initFilters() {
+        const catSelect = document.getElementById('category-filter');
+        const categories = new Set();
+        DATASET.forEach(item => {
+            if (item.category) categories.add(item.category);
+        });
+        Array.from(categories).sort().forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat;
+            opt.textContent = cat;
+            catSelect.appendChild(opt);
+        });
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+
+        const startIdx = (currentPage - 1) * pageSize;
+        const pageItems = filteredData.slice(startIdx, startIdx + pageSize);
+
+        if (pageItems.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">No records found matching filters.</td></tr>';
+            document.getElementById('pagination-info').textContent = '0 entries';
+            document.getElementById('btn-prev').disabled = true;
+            document.getElementById('btn-next').disabled = true;
+            return;
+        }
+
+        pageItems.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            const isBook = item.source.includes('Book');
+
+            const sourceBadge = isBook 
+                ? '<span class="source-tag source-books">Books</span>' 
+                : '<span class="source-tag source-quotes">Quotes</span>';
+
+            const priceHtml = item.price !== null 
+                ? `<span class="price-badge">£${Number(item.price).toFixed(2)}</span>` 
+                : '<span style="color: var(--text-muted);">-</span>';
+
+            const ratingHtml = item.rating 
+                ? `<span class="stars">${'★'.repeat(item.rating)}{'☆'.repeat(5 - item.rating)}</span>` 
+                : '<span style="color: var(--text-muted);">-</span>';
+
+            const catOrAuthor = isBook 
+                ? (item.category ? `<span class="category-tag">${item.category}</span>` : '<span style="color: var(--text-muted);">Default</span>')
+                : `<span style="color: #cbd5e1; font-weight: 500;">${item.author || 'Unknown'}</span>`;
+
+            tr.innerHTML = `
+                <td>${sourceBadge}</td>
+                <td><div class="item-title" title="${item.name_or_title}">${item.name_or_title}</div></td>
+                <td>${catOrAuthor}</td>
+                <td>${priceHtml}</td>
+                <td>${ratingHtml}</td>
+                <td><a href="${item.source_url}" target="_blank" class="link-icon">Visit ↗</a></td>
+                <td><button class="page-btn" onclick="openModal(${startIdx + index})">View</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        const total = filteredData.length;
+        const endIdx = Math.min(startIdx + pageSize, total);
+        document.getElementById('pagination-info').textContent = `Showing ${startIdx + 1} to ${endIdx} of ${total} entries`;
+        document.getElementById('btn-prev').disabled = currentPage === 1;
+        document.getElementById('btn-next').disabled = endIdx >= total;
+    }
+
+    function handleSearch() {
+        applyFilters();
+    }
+
+    function handleFilter() {
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const query = document.getElementById('search-input').value.toLowerCase().trim();
+        const src = document.getElementById('source-filter').value;
+        const cat = document.getElementById('category-filter').value;
+
+        filteredData = DATASET.filter(item => {
+            const matchSrc = src === 'all' || item.source === src;
+            const matchCat = cat === 'all' || item.category === cat;
+            const textMatch = !query || 
+                (item.name_or_title && item.name_or_title.toLowerCase().includes(query)) ||
+                (item.author && item.author.toLowerCase().includes(query)) ||
+                (item.tags && item.tags.toLowerCase().includes(query)) ||
+                (item.category && item.category.toLowerCase().includes(query));
+
+            return matchSrc && matchCat && textMatch;
+        });
+
+        currentPage = 1;
+        renderTable();
+    }
+
+    function changePage(direction) {
+        currentPage += direction;
+        renderTable();
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.getElementById('tab-btn-' + tabId.replace('tab-', '')).classList.add('active');
+    }
+
+    function openModal(index) {
+        const item = filteredData[index];
+        if (!item) return;
+
+        document.getElementById('modal-title').textContent = item.name_or_title;
+        let content = `
+            <div style="margin-bottom: 0.75rem;"><strong>Source:</strong> ${item.source}</div>
+            <div style="margin-bottom: 0.75rem;"><strong>Source URL:</strong> <a href="${item.source_url}" target="_blank" style="color: var(--accent-cyan);">${item.source_url}</a></div>
+        `;
+        if (item.category) content += `<div style="margin-bottom: 0.75rem;"><strong>Category:</strong> ${item.category}</div>`;
+        if (item.price !== null) content += `<div style="margin-bottom: 0.75rem;"><strong>Price:</strong> £${Number(item.price).toFixed(2)}</div>`;
+        if (item.rating !== null) content += `<div style="margin-bottom: 0.75rem;"><strong>Rating:</strong> ${item.rating} / 5</div>`;
+        if (item.author) content += `<div style="margin-bottom: 0.75rem;"><strong>Author:</strong> ${item.author}</div>`;
+        if (item.tags) content += `<div style="margin-bottom: 0.75rem;"><strong>Tags:</strong> ${item.tags}</div>`;
+        if (item.description) content += `<div style="margin-top: 1rem;"><strong>Description:</strong><p style="margin-top: 0.5rem; line-height: 1.5;">${item.description}</p></div>`;
+        content += `<div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">Scraped At: ${item.scraped_at}</div>`;
+
+        document.getElementById('modal-body').innerHTML = content;
+        document.getElementById('detail-modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('detail-modal').classList.remove('active');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        initFilters();
+        renderTable();
+    });
+</script>
+</body>
+</html>
