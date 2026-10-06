@@ -1,0 +1,275 @@
+2026-10-06 10:08:12 [INFO] main: Initializing Scraping Pipeline with settings:
+2026-10-06 10:08:12 [INFO] main:   - Sources: ['books', 'quotes']
+2026-10-06 10:08:12 [INFO] main:   - Max Pages: 3
+2026-10-06 10:08:12 [INFO] main:   - Rate Limit Delay: 0.2s
+2026-10-06 10:08:12 [INFO] main:   - Fetch Book Details: True
+2026-10-06 10:08:12 [INFO] main:   - Deduplication Strategy: remove
+2026-10-06 10:08:12 [INFO] main:   - Output Directory: output
+2026-10-06 10:08:12 [INFO] pipeline: ==================================================
+2026-10-06 10:08:12 [INFO] pipeline: STARTING MULTI-SOURCE SCRAPING & CONSOLIDATION
+2026-10-06 10:08:12 [INFO] pipeline: ==================================================
+2026-10-06 10:08:12 [INFO] pipeline: Initializing Books to Scrape scraper...
+2026-10-06 10:08:12 [INFO] scrapers.books_scraper: Starting Books scraping from: https://books.toscrape.com/index.html
+2026-10-06 10:08:12 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 1: https://books.toscrape.com/index.html
+2026-10-06 10:08:27 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 2: https://books.toscrape.com/catalogue/page-2.html
+2026-10-06 10:08:42 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 3: https://books.toscrape.com/catalogue/page-3.html
+2026-10-06 10:08:57 [INFO] scrapers.books_scraper: Reached maximum pages limit (3) for Books.
+2026-10-06 10:08:57 [INFO] scrapers.books_scraper: Completed Books scraping: 60 records from 3 pages.
+2026-10-06 10:08:57 [INFO] pipeline: Initializing Quotes to Scrape scraper...
+2026-10-06 10:08:57 [INFO] scrapers.quotes_scraper: Starting Quotes scraping from: https://quotes.toscrape.com/
+2026-10-06 10:08:57 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 1: https://quotes.toscrape.com/
+2026-10-06 10:08:58 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 2: https://quotes.toscrape.com/page/2/
+2026-10-06 10:08:59 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 3: https://quotes.toscrape.com/page/3/
+2026-10-06 10:08:59 [INFO] scrapers.quotes_scraper: Reached maximum pages limit (3) for Quotes.
+2026-10-06 10:08:59 [INFO] scrapers.quotes_scraper: Completed Quotes scraping: 30 records from 3 pages.
+2026-10-06 10:08:59 [INFO] pipeline: Stage 1 Complete: Total Raw Records Collected = 90 ({'Books to Scrape': 60, 'Quotes to Scrape': 30})
+2026-10-06 10:08:59 [INFO] pipeline: Stage 2: Cleaning and normalizing data...
+2026-10-06 10:08:59 [INFO] pipeline: Stage 2 Complete: Cleaned Records = 90
+2026-10-06 10:08:59 [INFO] pipeline: Stage 3: Validating records against schema rules...
+2026-10-06 10:08:59 [INFO] pipeline: Stage 3 Complete: Valid Records = 90, Rejected = 0
+2026-10-06 10:08:59 [INFO] pipeline: Stage 4: Running deduplication (strategy: remove)...
+2026-10-06 10:08:59 [INFO] pipeline: Stage 4 Complete: Duplicates Detected = 0, Final Consolidated Records = 90
+2026-10-06 10:08:59 [INFO] pipeline: Stage 5: Writing consolidated output datasets...
+2026-10-06 10:08:59 [INFO] pipeline: ==================================================
+2026-10-06 10:08:59 [INFO] pipeline: PIPELINE COMPLETED IN 47.42s
+2026-10-06 10:08:59 [INFO] pipeline: Final dataset exported to: output\final_dataset.csv
+2026-10-06 10:08:59 [INFO] pipeline: Summary report exported to: output\summary_report.json
+2026-10-06 10:08:59 [INFO] pipeline: ==================================================
+2026-10-06 10:24:00 [INFO] main: Initializing Scraping Pipeline with settings:
+2026-10-06 10:24:00 [INFO] main:   - Sources: ['books', 'quotes']
+2026-10-06 10:24:00 [INFO] main:   - Max Pages: 1
+2026-10-06 10:24:00 [INFO] main:   - Rate Limit Delay: 0.2s
+2026-10-06 10:24:00 [INFO] main:   - Fetch Book Details: False
+2026-10-06 10:24:00 [INFO] main:   - Deduplication Strategy: remove
+2026-10-06 10:24:00 [INFO] main:   - Output Directory: output
+2026-10-06 10:24:00 [INFO] pipeline: ==================================================
+2026-10-06 10:24:00 [INFO] pipeline: STARTING MULTI-SOURCE SCRAPING & CONSOLIDATION
+2026-10-06 10:24:00 [INFO] pipeline: ==================================================
+2026-10-06 10:24:00 [INFO] pipeline: Initializing Books to Scrape scraper...
+2026-10-06 10:24:00 [INFO] scrapers.books_scraper: Starting Books scraping from: https://books.toscrape.com/index.html
+2026-10-06 10:24:00 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 1: https://books.toscrape.com/index.html
+2026-10-06 10:24:02 [INFO] scrapers.books_scraper: Reached maximum pages limit (1) for Books.
+2026-10-06 10:24:02 [INFO] scrapers.books_scraper: Completed Books scraping: 20 records from 1 pages.
+2026-10-06 10:24:02 [INFO] pipeline: Initializing Quotes to Scrape scraper...
+2026-10-06 10:24:02 [INFO] scrapers.quotes_scraper: Starting Quotes scraping from: https://quotes.toscrape.com/
+2026-10-06 10:24:02 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 1: https://quotes.toscrape.com/
+2026-10-06 10:24:03 [INFO] scrapers.quotes_scraper: Reached maximum pages limit (1) for Quotes.
+2026-10-06 10:24:03 [INFO] scrapers.quotes_scraper: Completed Quotes scraping: 10 records from 1 pages.
+2026-10-06 10:24:03 [INFO] pipeline: Stage 1 Complete: Total Raw Records Collected = 30 ({'Books to Scrape': 20, 'Quotes to Scrape': 10})
+2026-10-06 10:24:03 [INFO] pipeline: Stage 2: Cleaning and normalizing data...
+2026-10-06 10:24:03 [INFO] pipeline: Stage 2 Complete: Cleaned Records = 30
+2026-10-06 10:24:03 [INFO] pipeline: Stage 3: Validating records against schema rules...
+2026-10-06 10:24:03 [INFO] pipeline: Stage 3 Complete: Valid Records = 30, Rejected = 0
+2026-10-06 10:24:03 [INFO] pipeline: Stage 4: Running deduplication (strategy: remove)...
+2026-10-06 10:24:03 [INFO] pipeline: Stage 4 Complete: Duplicates Detected = 0, Final Consolidated Records = 30
+2026-10-06 10:24:03 [INFO] pipeline: Stage 5: Writing consolidated output datasets...
+2026-10-06 10:24:03 [INFO] pipeline: ==================================================
+2026-10-06 10:24:03 [INFO] pipeline: PIPELINE COMPLETED IN 2.51s
+2026-10-06 10:24:03 [INFO] pipeline: Final dataset exported to: output\final_dataset.csv
+2026-10-06 10:24:03 [INFO] pipeline: Summary report exported to: output\summary_report.json
+2026-10-06 10:24:03 [INFO] pipeline: ==================================================
+2026-10-06 10:24:16 [INFO] main: Initializing Scraping Pipeline with settings:
+2026-10-06 10:24:16 [INFO] main:   - Sources: ['books', 'quotes']
+2026-10-06 10:24:16 [INFO] main:   - Max Pages: 3
+2026-10-06 10:24:16 [INFO] main:   - Rate Limit Delay: 0.2s
+2026-10-06 10:24:16 [INFO] main:   - Fetch Book Details: True
+2026-10-06 10:24:16 [INFO] main:   - Deduplication Strategy: remove
+2026-10-06 10:24:16 [INFO] main:   - Output Directory: output
+2026-10-06 10:24:16 [INFO] pipeline: ==================================================
+2026-10-06 10:24:16 [INFO] pipeline: STARTING MULTI-SOURCE SCRAPING & CONSOLIDATION
+2026-10-06 10:24:16 [INFO] pipeline: ==================================================
+2026-10-06 10:24:16 [INFO] pipeline: Initializing Books to Scrape scraper...
+2026-10-06 10:24:16 [INFO] scrapers.books_scraper: Starting Books scraping from: https://books.toscrape.com/index.html
+2026-10-06 10:24:16 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 1: https://books.toscrape.com/index.html
+2026-10-06 10:24:29 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 2: https://books.toscrape.com/catalogue/page-2.html
+2026-10-06 10:24:39 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 3: https://books.toscrape.com/catalogue/page-3.html
+2026-10-06 10:24:50 [INFO] scrapers.books_scraper: Reached maximum pages limit (3) for Books.
+2026-10-06 10:24:50 [INFO] scrapers.books_scraper: Completed Books scraping: 60 records from 3 pages.
+2026-10-06 10:24:50 [INFO] pipeline: Initializing Quotes to Scrape scraper...
+2026-10-06 10:24:50 [INFO] scrapers.quotes_scraper: Starting Quotes scraping from: https://quotes.toscrape.com/
+2026-10-06 10:24:50 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 1: https://quotes.toscrape.com/
+2026-10-06 10:24:52 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 2: https://quotes.toscrape.com/page/2/
+2026-10-06 10:24:52 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 3: https://quotes.toscrape.com/page/3/
+2026-10-06 10:24:53 [INFO] scrapers.quotes_scraper: Reached maximum pages limit (3) for Quotes.
+2026-10-06 10:24:53 [INFO] scrapers.quotes_scraper: Completed Quotes scraping: 30 records from 3 pages.
+2026-10-06 10:24:53 [INFO] pipeline: Stage 1 Complete: Total Raw Records Collected = 90 ({'Books to Scrape': 60, 'Quotes to Scrape': 30})
+2026-10-06 10:24:53 [INFO] pipeline: Stage 2: Cleaning and normalizing data...
+2026-10-06 10:24:53 [INFO] pipeline: Stage 2 Complete: Cleaned Records = 90
+2026-10-06 10:24:53 [INFO] pipeline: Stage 3: Validating records against schema rules...
+2026-10-06 10:24:53 [INFO] pipeline: Stage 3 Complete: Valid Records = 90, Rejected = 0
+2026-10-06 10:24:53 [INFO] pipeline: Stage 4: Running deduplication (strategy: remove)...
+2026-10-06 10:24:53 [INFO] pipeline: Stage 4 Complete: Duplicates Detected = 0, Final Consolidated Records = 90
+2026-10-06 10:24:53 [INFO] pipeline: Stage 5: Writing consolidated output datasets...
+2026-10-06 10:24:53 [INFO] pipeline: ==================================================
+2026-10-06 10:24:53 [INFO] pipeline: PIPELINE COMPLETED IN 36.55s
+2026-10-06 10:24:53 [INFO] pipeline: Final dataset exported to: output\final_dataset.csv
+2026-10-06 10:24:53 [INFO] pipeline: Summary report exported to: output\summary_report.json
+2026-10-06 10:24:53 [INFO] pipeline: ==================================================
+2026-10-06 10:26:39 [INFO] main: Initializing Scraping Pipeline with settings:
+2026-10-06 10:26:39 [INFO] main:   - Sources: ['books', 'quotes']
+2026-10-06 10:26:39 [INFO] main:   - Max Pages: 3
+2026-10-06 10:26:39 [INFO] main:   - Rate Limit Delay: 0.2s
+2026-10-06 10:26:39 [INFO] main:   - Fetch Book Details: True
+2026-10-06 10:26:39 [INFO] main:   - Deduplication Strategy: remove
+2026-10-06 10:26:39 [INFO] main:   - Output Directory: output
+2026-10-06 10:26:39 [INFO] pipeline: ==================================================
+2026-10-06 10:26:39 [INFO] pipeline: STARTING MULTI-SOURCE SCRAPING & CONSOLIDATION
+2026-10-06 10:26:39 [INFO] pipeline: ==================================================
+2026-10-06 10:26:39 [INFO] pipeline: Initializing Books to Scrape scraper...
+2026-10-06 10:26:39 [INFO] scrapers.books_scraper: Starting Books scraping from: https://books.toscrape.com/index.html
+2026-10-06 10:26:39 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 1: https://books.toscrape.com/index.html
+2026-10-06 10:26:50 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 2: https://books.toscrape.com/catalogue/page-2.html
+2026-10-06 10:27:00 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 3: https://books.toscrape.com/catalogue/page-3.html
+2026-10-06 10:27:11 [INFO] scrapers.books_scraper: Reached maximum pages limit (3) for Books.
+2026-10-06 10:27:11 [INFO] scrapers.books_scraper: Completed Books scraping: 60 records from 3 pages.
+2026-10-06 10:27:11 [INFO] pipeline: Initializing Quotes to Scrape scraper...
+2026-10-06 10:27:11 [INFO] scrapers.quotes_scraper: Starting Quotes scraping from: https://quotes.toscrape.com/
+2026-10-06 10:27:11 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 1: https://quotes.toscrape.com/
+2026-10-06 10:27:12 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 2: https://quotes.toscrape.com/page/2/
+2026-10-06 10:27:12 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 3: https://quotes.toscrape.com/page/3/
+2026-10-06 10:27:12 [INFO] scrapers.quotes_scraper: Reached maximum pages limit (3) for Quotes.
+2026-10-06 10:27:12 [INFO] scrapers.quotes_scraper: Completed Quotes scraping: 30 records from 3 pages.
+2026-10-06 10:27:12 [INFO] pipeline: Stage 1 Complete: Total Raw Records Collected = 90 ({'Books to Scrape': 60, 'Quotes to Scrape': 30})
+2026-10-06 10:27:12 [INFO] pipeline: Stage 2: Cleaning and normalizing data...
+2026-10-06 10:27:12 [INFO] pipeline: Stage 2 Complete: Cleaned Records = 90
+2026-10-06 10:27:12 [INFO] pipeline: Stage 3: Validating records against schema rules...
+2026-10-06 10:27:12 [INFO] pipeline: Stage 3 Complete: Valid Records = 90, Rejected = 0
+2026-10-06 10:27:12 [INFO] pipeline: Stage 4: Running deduplication (strategy: remove)...
+2026-10-06 10:27:12 [INFO] pipeline: Stage 4 Complete: Duplicates Detected = 0, Final Consolidated Records = 90
+2026-10-06 10:27:12 [INFO] pipeline: Stage 5: Writing consolidated output datasets...
+2026-10-06 10:27:13 [INFO] pipeline: ==================================================
+2026-10-06 10:27:13 [INFO] pipeline: PIPELINE COMPLETED IN 33.7s
+2026-10-06 10:27:13 [INFO] pipeline: Final dataset exported to: output\final_dataset.csv
+2026-10-06 10:27:13 [INFO] pipeline: Summary report exported to: output\summary_report.json
+2026-10-06 10:27:13 [INFO] pipeline: ==================================================
+2026-10-06 10:27:13 [INFO] main: Initializing Scraping Pipeline with settings:
+2026-10-06 10:27:13 [INFO] main:   - Sources: ['books', 'quotes']
+2026-10-06 10:27:13 [INFO] main:   - Max Pages: ALL
+2026-10-06 10:27:13 [INFO] main:   - Rate Limit Delay: 0.2s
+2026-10-06 10:27:13 [INFO] main:   - Fetch Book Details: True
+2026-10-06 10:27:13 [INFO] main:   - Deduplication Strategy: remove
+2026-10-06 10:27:13 [INFO] main:   - Output Directory: output
+2026-10-06 10:27:13 [INFO] pipeline: ==================================================
+2026-10-06 10:27:13 [INFO] pipeline: STARTING MULTI-SOURCE SCRAPING & CONSOLIDATION
+2026-10-06 10:27:13 [INFO] pipeline: ==================================================
+2026-10-06 10:27:13 [INFO] pipeline: Initializing Books to Scrape scraper...
+2026-10-06 10:27:13 [INFO] scrapers.books_scraper: Starting Books scraping from: https://books.toscrape.com/index.html
+2026-10-06 10:27:13 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 1: https://books.toscrape.com/index.html
+2026-10-06 10:27:24 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 2: https://books.toscrape.com/catalogue/page-2.html
+2026-10-06 10:27:34 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 3: https://books.toscrape.com/catalogue/page-3.html
+2026-10-06 10:27:45 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 4: https://books.toscrape.com/catalogue/page-4.html
+2026-10-06 10:27:55 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 5: https://books.toscrape.com/catalogue/page-5.html
+2026-10-06 10:28:06 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 6: https://books.toscrape.com/catalogue/page-6.html
+2026-10-06 10:28:16 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 7: https://books.toscrape.com/catalogue/page-7.html
+2026-10-06 10:28:27 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 8: https://books.toscrape.com/catalogue/page-8.html
+2026-10-06 10:28:37 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 9: https://books.toscrape.com/catalogue/page-9.html
+2026-10-06 10:28:47 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 10: https://books.toscrape.com/catalogue/page-10.html
+2026-10-06 10:28:58 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 11: https://books.toscrape.com/catalogue/page-11.html
+2026-10-06 10:29:08 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 12: https://books.toscrape.com/catalogue/page-12.html
+2026-10-06 10:29:19 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 13: https://books.toscrape.com/catalogue/page-13.html
+2026-10-06 10:29:29 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 14: https://books.toscrape.com/catalogue/page-14.html
+2026-10-06 10:29:40 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 15: https://books.toscrape.com/catalogue/page-15.html
+2026-10-06 10:29:50 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 16: https://books.toscrape.com/catalogue/page-16.html
+2026-10-06 10:30:01 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 17: https://books.toscrape.com/catalogue/page-17.html
+2026-10-06 10:30:11 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 18: https://books.toscrape.com/catalogue/page-18.html
+2026-10-06 10:30:22 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 19: https://books.toscrape.com/catalogue/page-19.html
+2026-10-06 10:30:32 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 20: https://books.toscrape.com/catalogue/page-20.html
+2026-10-06 10:30:43 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 21: https://books.toscrape.com/catalogue/page-21.html
+2026-10-06 10:30:53 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 22: https://books.toscrape.com/catalogue/page-22.html
+2026-10-06 10:31:03 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 23: https://books.toscrape.com/catalogue/page-23.html
+2026-10-06 10:31:14 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 24: https://books.toscrape.com/catalogue/page-24.html
+2026-10-06 10:31:24 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 25: https://books.toscrape.com/catalogue/page-25.html
+2026-10-06 10:31:35 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 26: https://books.toscrape.com/catalogue/page-26.html
+2026-10-06 10:31:46 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 27: https://books.toscrape.com/catalogue/page-27.html
+2026-10-06 10:31:56 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 28: https://books.toscrape.com/catalogue/page-28.html
+2026-10-06 10:32:06 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 29: https://books.toscrape.com/catalogue/page-29.html
+2026-10-06 10:32:17 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 30: https://books.toscrape.com/catalogue/page-30.html
+2026-10-06 10:32:27 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 31: https://books.toscrape.com/catalogue/page-31.html
+2026-10-06 10:32:38 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 32: https://books.toscrape.com/catalogue/page-32.html
+2026-10-06 10:32:48 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 33: https://books.toscrape.com/catalogue/page-33.html
+2026-10-06 10:32:59 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 34: https://books.toscrape.com/catalogue/page-34.html
+2026-10-06 10:33:09 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 35: https://books.toscrape.com/catalogue/page-35.html
+2026-10-06 10:33:20 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 36: https://books.toscrape.com/catalogue/page-36.html
+2026-10-06 10:33:30 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 37: https://books.toscrape.com/catalogue/page-37.html
+2026-10-06 10:33:41 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 38: https://books.toscrape.com/catalogue/page-38.html
+2026-10-06 10:33:51 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 39: https://books.toscrape.com/catalogue/page-39.html
+2026-10-06 10:34:02 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 40: https://books.toscrape.com/catalogue/page-40.html
+2026-10-06 10:34:13 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 41: https://books.toscrape.com/catalogue/page-41.html
+2026-10-06 10:34:23 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 42: https://books.toscrape.com/catalogue/page-42.html
+2026-10-06 10:34:34 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 43: https://books.toscrape.com/catalogue/page-43.html
+2026-10-06 10:34:44 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 44: https://books.toscrape.com/catalogue/page-44.html
+2026-10-06 10:34:55 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 45: https://books.toscrape.com/catalogue/page-45.html
+2026-10-06 10:35:05 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 46: https://books.toscrape.com/catalogue/page-46.html
+2026-10-06 10:35:16 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 47: https://books.toscrape.com/catalogue/page-47.html
+2026-10-06 10:35:26 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 48: https://books.toscrape.com/catalogue/page-48.html
+2026-10-06 10:35:36 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 49: https://books.toscrape.com/catalogue/page-49.html
+2026-10-06 10:35:47 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 50: https://books.toscrape.com/catalogue/page-50.html
+2026-10-06 10:35:57 [INFO] scrapers.books_scraper: Completed Books scraping: 1000 records from 50 pages.
+2026-10-06 10:35:57 [INFO] pipeline: Initializing Quotes to Scrape scraper...
+2026-10-06 10:35:57 [INFO] scrapers.quotes_scraper: Starting Quotes scraping from: https://quotes.toscrape.com/
+2026-10-06 10:35:57 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 1: https://quotes.toscrape.com/
+2026-10-06 10:35:58 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 2: https://quotes.toscrape.com/page/2/
+2026-10-06 10:35:59 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 3: https://quotes.toscrape.com/page/3/
+2026-10-06 10:35:59 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 4: https://quotes.toscrape.com/page/4/
+2026-10-06 10:36:00 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 5: https://quotes.toscrape.com/page/5/
+2026-10-06 10:36:00 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 6: https://quotes.toscrape.com/page/6/
+2026-10-06 10:36:01 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 7: https://quotes.toscrape.com/page/7/
+2026-10-06 10:36:01 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 8: https://quotes.toscrape.com/page/8/
+2026-10-06 10:36:02 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 9: https://quotes.toscrape.com/page/9/
+2026-10-06 10:36:02 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 10: https://quotes.toscrape.com/page/10/
+2026-10-06 10:36:03 [INFO] scrapers.quotes_scraper: Completed Quotes scraping: 100 records from 10 pages.
+2026-10-06 10:36:03 [INFO] pipeline: Stage 1 Complete: Total Raw Records Collected = 1100 ({'Books to Scrape': 1000, 'Quotes to Scrape': 100})
+2026-10-06 10:36:03 [INFO] pipeline: Stage 2: Cleaning and normalizing data...
+2026-10-06 10:36:03 [INFO] pipeline: Stage 2 Complete: Cleaned Records = 1100
+2026-10-06 10:36:03 [INFO] pipeline: Stage 3: Validating records against schema rules...
+2026-10-06 10:36:03 [INFO] pipeline: Stage 3 Complete: Valid Records = 1100, Rejected = 0
+2026-10-06 10:36:03 [INFO] pipeline: Stage 4: Running deduplication (strategy: remove)...
+2026-10-06 10:36:03 [INFO] processing.deduplication: Duplicate detected: 'The Star-Touched Queen' matches original from https://books.toscrape.com/catalogue/the-star-touched-queen_764/index.html (Action: remove)
+2026-10-06 10:36:03 [INFO] pipeline: Stage 4 Complete: Duplicates Detected = 1, Final Consolidated Records = 1099
+2026-10-06 10:36:03 [INFO] pipeline: Stage 5: Writing consolidated output datasets...
+2026-10-06 10:36:03 [INFO] pipeline: ==================================================
+2026-10-06 10:36:03 [INFO] pipeline: PIPELINE COMPLETED IN 529.8s
+2026-10-06 10:36:03 [INFO] pipeline: Final dataset exported to: output\final_dataset.csv
+2026-10-06 10:36:03 [INFO] pipeline: Summary report exported to: output\summary_report.json
+2026-10-06 10:36:03 [INFO] pipeline: ==================================================
+2026-10-06 10:36:05 [INFO] main: Initializing Scraping Pipeline with settings:
+2026-10-06 10:36:05 [INFO] main:   - Sources: ['books', 'quotes']
+2026-10-06 10:36:05 [INFO] main:   - Max Pages: 5
+2026-10-06 10:36:05 [INFO] main:   - Rate Limit Delay: 0.2s
+2026-10-06 10:36:05 [INFO] main:   - Fetch Book Details: False
+2026-10-06 10:36:05 [INFO] main:   - Deduplication Strategy: remove
+2026-10-06 10:36:05 [INFO] main:   - Output Directory: output
+2026-10-06 10:36:05 [INFO] pipeline: ==================================================
+2026-10-06 10:36:05 [INFO] pipeline: STARTING MULTI-SOURCE SCRAPING & CONSOLIDATION
+2026-10-06 10:36:05 [INFO] pipeline: ==================================================
+2026-10-06 10:36:05 [INFO] pipeline: Initializing Books to Scrape scraper...
+2026-10-06 10:36:05 [INFO] scrapers.books_scraper: Starting Books scraping from: https://books.toscrape.com/index.html
+2026-10-06 10:36:05 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 1: https://books.toscrape.com/index.html
+2026-10-06 10:36:06 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 2: https://books.toscrape.com/catalogue/page-2.html
+2026-10-06 10:36:06 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 3: https://books.toscrape.com/catalogue/page-3.html
+2026-10-06 10:36:07 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 4: https://books.toscrape.com/catalogue/page-4.html
+2026-10-06 10:36:07 [INFO] scrapers.books_scraper: [Books to Scrape] Scraping Page 5: https://books.toscrape.com/catalogue/page-5.html
+2026-10-06 10:36:08 [INFO] scrapers.books_scraper: Reached maximum pages limit (5) for Books.
+2026-10-06 10:36:08 [INFO] scrapers.books_scraper: Completed Books scraping: 100 records from 5 pages.
+2026-10-06 10:36:08 [INFO] pipeline: Initializing Quotes to Scrape scraper...
+2026-10-06 10:36:08 [INFO] scrapers.quotes_scraper: Starting Quotes scraping from: https://quotes.toscrape.com/
+2026-10-06 10:36:08 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 1: https://quotes.toscrape.com/
+2026-10-06 10:36:09 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 2: https://quotes.toscrape.com/page/2/
+2026-10-06 10:36:09 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 3: https://quotes.toscrape.com/page/3/
+2026-10-06 10:36:10 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 4: https://quotes.toscrape.com/page/4/
+2026-10-06 10:36:10 [INFO] scrapers.quotes_scraper: [Quotes to Scrape] Scraping Page 5: https://quotes.toscrape.com/page/5/
+2026-10-06 10:36:11 [INFO] scrapers.quotes_scraper: Reached maximum pages limit (5) for Quotes.
+2026-10-06 10:36:11 [INFO] scrapers.quotes_scraper: Completed Quotes scraping: 50 records from 5 pages.
+2026-10-06 10:36:11 [INFO] pipeline: Stage 1 Complete: Total Raw Records Collected = 150 ({'Books to Scrape': 100, 'Quotes to Scrape': 50})
+2026-10-06 10:36:11 [INFO] pipeline: Stage 2: Cleaning and normalizing data...
+2026-10-06 10:36:11 [INFO] pipeline: Stage 2 Complete: Cleaned Records = 150
+2026-10-06 10:36:11 [INFO] pipeline: Stage 3: Validating records against schema rules...
+2026-10-06 10:36:11 [INFO] pipeline: Stage 3 Complete: Valid Records = 150, Rejected = 0
+2026-10-06 10:36:11 [INFO] pipeline: Stage 4: Running deduplication (strategy: remove)...
+2026-10-06 10:36:11 [INFO] pipeline: Stage 4 Complete: Duplicates Detected = 0, Final Consolidated Records = 150
+2026-10-06 10:36:11 [INFO] pipeline: Stage 5: Writing consolidated output datasets...
+2026-10-06 10:36:11 [INFO] pipeline: ==================================================
+2026-10-06 10:36:11 [INFO] pipeline: PIPELINE COMPLETED IN 6.38s
+2026-10-06 10:36:11 [INFO] pipeline: Final dataset exported to: output\final_dataset.csv
+2026-10-06 10:36:11 [INFO] pipeline: Summary report exported to: output\summary_report.json
+2026-10-06 10:36:11 [INFO] pipeline: ==================================================

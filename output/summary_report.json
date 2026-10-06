@@ -1,0 +1,46 @@
+{
+  "pipeline_metadata": {
+    "generated_at": "2026-10-06T17:36:11.430278+00:00",
+    "execution_time_seconds": 6.38,
+    "deduplication_strategy": "remove",
+    "rate_limit_delay_seconds": 0.2,
+    "max_pages_limit": 5
+  },
+  "source_metrics": {
+    "pages_scraped": {
+      "Books to Scrape": 5,
+      "Quotes to Scrape": 5
+    },
+    "raw_records_collected": {
+      "Books to Scrape": 100,
+      "Quotes to Scrape": 50
+    },
+    "final_records_by_source": {
+      "Books to Scrape": 100,
+      "Quotes to Scrape": 50
+    }
+  },
+  "pipeline_funnel_metrics": {
+    "total_records_collected": 150,
+    "total_records_after_cleaning": 150,
+    "records_rejected_validation": 0,
+    "duplicate_records_detected": 0,
+    "final_record_count": 150
+  },
+  "field_completeness_percentages": {
+    "name_or_title": "100.0%",
+    "category": "0.0%",
+    "price": "66.7%",
+    "rating": "66.7%",
+    "author": "33.3%",
+    "tags": "32.0%",
+    "description": "0.0%",
+    "source_url": "100.0%"
+  },
+  "validation_failures": [],
+  "duplicates_detected_audit": [],
+  "network_errors_encountered": {
+    "Books to Scrape": [],
+    "Quotes to Scrape": []
+  }
+}
